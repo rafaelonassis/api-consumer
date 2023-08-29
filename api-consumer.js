@@ -7,13 +7,6 @@ const dbPassword = 'impactaUser';
 
 // Definição dos esquemas
 const ThirtyDayDataSchema = new mongoose.Schema({
-    timestamp: Number,
-    price: Number,
-    volume1: Number,
-    volume2: Number
-});
-
-const FiveYearDataSchema = new mongoose.Schema({
     time_period_start: String,
     price_close: Number,
     price_high: Number,
@@ -24,6 +17,13 @@ const FiveYearDataSchema = new mongoose.Schema({
     time_period_end: String,
     trades_count: Number,
     volume_traded: Number
+});
+
+const FiveYearDataSchema = new mongoose.Schema({
+    timestamp: Number,
+    price: Number,
+    volume1: Number,
+    volume2: Number
 });
 
 // Criação dos modelos
@@ -79,9 +79,8 @@ const options5yearsago = {
 
 const callback30 = function(erro, res, body) {
     let json = JSON.parse(body);
-    const obj30 = json;
 
-    ThirtyDayData.insertMany(obj30)
+    ThirtyDayData.insertMany(json)
         .then(docs => {
             console.log('Dados dos últimos 30 dias inseridos com sucesso:', docs.length, 'registros');
         })
@@ -92,9 +91,15 @@ const callback30 = function(erro, res, body) {
 
 const callback5 = function(erro, res, body) {
     let json = JSON.parse(body);
-    const obj5 = json.data;
 
-    FiveYearData.insertMany(obj5)
+    const dataToInsert = json.BTC.map(entry => ({
+        timestamp: entry[0],
+        price: entry[1],
+        volume1: entry[2],
+        volume2: entry[3]
+    }));
+
+    FiveYearData.insertMany(dataToInsert)
         .then(docs => {
             console.log('Dados dos últimos 5 anos inseridos com sucesso:', docs.length, 'registros');
         })
