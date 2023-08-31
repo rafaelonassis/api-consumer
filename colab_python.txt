@@ -1,0 +1,58 @@
+Instalar bibliotecas:
+!pip install -r sample_data/requirements.txt
+
+Grafico 1:
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Supondo que 'bitcoin_data.csv' seja o nome do seu arquivo CSV
+df = pd.read_csv('sample_data/fiveyeardatas.csv')
+
+# Convertendo a coluna 'timestamp' para formato de data
+df['timestamp'] = pd.to_datetime(df['timestamp'], unit='s')
+
+# Selecionando apenas os últimos 5 anos de dados
+last_5_years = df[df['timestamp'] >= df['timestamp'].max() - pd.DateOffset(years=5)]
+
+# Criando o gráfico
+plt.figure(figsize=(10, 6))
+plt.plot(last_5_years['timestamp'], last_5_years['price'], marker='o', linestyle='-', color='b')
+plt.xlabel('Data')
+plt.ylabel('Preço do Bitcoin')
+plt.title('Valor do Bitcoin nos Últimos 5 Anos')
+plt.xticks(rotation=45)
+plt.tight_layout()
+plt.show()
+
+Grafico 2:
+import pandas as pd
+import plotly.graph_objects as go
+import plotly.io as pio
+
+# Carregar os dados do arquivo CSV
+data = pd.read_csv('sample_data/thirtydaydatas.csv')
+
+time_period_start = data["time_period_start"]
+price_open = data["price_open"]
+price_high = data["price_high"]
+price_low = data["price_low"]
+price_close = data["price_close"]
+
+grafico = go.Figure(data=[go.Candlestick(
+    x=time_period_start,
+    open=price_open,
+    high=price_high,
+    low=price_low,
+    close=price_close
+)])
+
+grafico.update_layout(
+    title='Últimos 30 Dias',
+    xaxis_title='Período',
+    yaxis_title='Preço',
+    height=800,
+    width=1000
+)
+
+# Exibir o gráfico no console
+pio.show(grafico)
